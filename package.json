@@ -1,0 +1,25 @@
+{
+  "name": "kk_dashboard",
+  "version": "0.0.1",
+  "description": "A dashboard web app for monitoring daily operations output.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Cambodia",
+    "Operations",
+    "Quality",
+    "Dashboard",
+    "Omni Remotes"
+  ],
+  "author": "Jamrus Ruttanayukol",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^5.2.2",
+    "d3": "^7.6.1",
+    "express": "^4.18.2",
+    "pug": "^3.0.2",
+    "tedious": "^15.1.2"
+  }
+}

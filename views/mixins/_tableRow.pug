@@ -1,0 +1,20 @@
+mixin tableRow(row)
+  if row.dppm > 999 && row.defectname != 'TOTAL'
+    tr.table-warning
+      +rowItems(row)
+  else if row.defectname == 'TOTAL'
+    tr.table-dark
+      +rowItems(row)
+  else
+    tr
+      +rowItems(row)
+
+mixin rowItems(row)
+  if row.defectname != 'TOTAL'
+    td #{row.defectname}
+    td #{row.quantity}
+    td #{row.dppm}
+  else
+    td !{"<b>"}#{row.defectname}!{"</b>"}
+    td !{"<b>"}#{row.quantity}!{"</b>"}
+    td !{"<b>"}#{row.dppm}!{"</b>"}

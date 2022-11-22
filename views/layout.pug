@@ -1,0 +1,24 @@
+doctype html
+html
+  head
+    title Omni Cambodia Quality Dashboard
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    link(rel='stylesheet' href='./css/bootstrap.min.css')
+    style.
+      footer { margin: 35px 0 15px 25px;}
+      .omni-logo { 
+        max-width: 200px;
+        margin-bottom: 10px;}
+  body
+    main#main
+    h1 Omni Cambodia Quality Dashboard - Top 10 defect criterions in the last 7 working days
+    div
+      block defectBar
+      block defectTable
+    block footer
+      footer
+        img.omni-logo(src='/images/Logo-Horizontal.jpg' alt="Omni logo")
+        p 
+          | © #{new Date().getFullYear()}
+          br
+          | Home Control Singapore

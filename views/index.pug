@@ -1,0 +1,19 @@
+extends layout.pug
+include mixins/_tableRow.pug
+
+block defectBar
+  p to add a bar chart later!
+
+block defectTable
+  table.table.table-striped.table-hover
+    thead
+      tr
+        th Defect criteria
+        th Quantity
+        th DPPM
+      tbody
+        each row in defects
+          +tableRow(row)
+      tfoot
+        tr
+          th(colspan='6')

@@ -2,25 +2,22 @@ extends layout.pug
 include mixins/_tableRow.pug
 
 block defectBar
-  div#defectBar
-    h2 Defect Criterion Pareto Chart
-    br/
-    div#paretoChart
-    script.
-      //const chG = require('/scripts/chartGen.js');
-      const top10data = !{JSON.stringify(defects)}.slice(0,-1);
-      BarChart(top10data, 'paretoChart', {
-        x: d => d.dppm,
-        y: d => d.defectname,
-        yDomain: top10data.map(d => d.defectname),
-        height: 400,
-        marginLeft: 100,
-        xLabel: "dppm in the last 7 operation days",
-        color: "steelblue"
-      });
+  h2 Defect Criterion Pareto Chart
+  br/
+  div#paretoChart
+  script.
+    const top10data = !{JSON.stringify(defects)}.slice(0,-1);
+    BarChart(top10data, 'paretoChart', {
+      x: d => d.dppm,
+      y: d => d.defectname,
+      yDomain: top10data.map(d => d.defectname),
+      height: 400,
+      marginLeft: 100,
+      xLabel: "dppm in the last 7 operation days",
+      color: "steelblue"
+    });
 
 block defectTable
-  div#defectTable
     table.table.table-striped.table-hover
       thead
         tr

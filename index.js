@@ -63,10 +63,11 @@ app.get('/', (_, res) => {
     // take out 10th+ pareto data
     if (defectsPareto.length > 11) defectsPareto.splice(10, defectsPareto.length - 11)
     executeStatement(qG.dailyRecord(7, 3), (dailyRecords) => {
+      //res.json(dailyRecords);
       res.render('index', { 
         defects: defectsPareto,
         PDdata: dailyRecords });
-    });
+      });
     })
 });
 

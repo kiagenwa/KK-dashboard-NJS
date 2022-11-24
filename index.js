@@ -3,13 +3,15 @@ const Connection = require('tedious').Connection;
 const Request = require('tedious').Request;
 const path = require('path');
 
-const qG = require('./original/queryGen.js')
+const qG = require('./original/queryGen.js');
+
 require('dotenv').config();
 
 const app = express();
 app.use(express.static('public'));
 app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css')));
 app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')));
+app.use('/d3', express.static(path.join(__dirname, 'node_modules/d3')));
 
 app.set('view engine', 'pug');
 
@@ -58,9 +60,12 @@ function executeStatement(sqlQuery, callback) {
 
 app.get('/', (_, res) => {
   executeStatement(qG.defectCriterions(7, 3), (queryResult) => {
-    console.log(queryResult);
-    res.render('index', { defects: queryResult });
-    //res.json(queryResult);
+    // take out 10th+ pareto data
+    if (queryResult.length > 11) queryResult.splice(10, queryResult.length - 11)
+    //console.log(queryResult);   //debug
+    res.render('index', { 
+      defects: queryResult });
+    //res.json(queryResult);      //debug
   });
 });
 

@@ -10,11 +10,10 @@ mixin tableRow(row)
       +rowItems(row)
 
 mixin rowItems(row)
+  td !{"<b>"}#{row.defectname}!{"</b>"}
   if row.defectname != 'TOTAL'
-    td #{row.defectname}
     td #{row.quantity}
     td #{row.dppm}
   else
-    td !{"<b>"}#{row.defectname}!{"</b>"}
     td !{"<b>"}#{row.quantity}!{"</b>"}
     td !{"<b>"}#{row.dppm}!{"</b>"}

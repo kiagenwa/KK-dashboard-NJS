@@ -59,14 +59,15 @@ function executeStatement(sqlQuery, callback) {
 }
 
 app.get('/', (_, res) => {
-  executeStatement(qG.defectCriterions(7, 3), (queryResult) => {
+  executeStatement(qG.defectPareto(7, 3), (defectsPareto) => {
     // take out 10th+ pareto data
-    if (queryResult.length > 11) queryResult.splice(10, queryResult.length - 11)
-    //console.log(queryResult);   //debug
-    res.render('index', { 
-      defects: queryResult });
-    //res.json(queryResult);      //debug
-  });
+    if (defectsPareto.length > 11) defectsPareto.splice(10, defectsPareto.length - 11)
+    executeStatement(qG.dailyRecord(7, 3), (dailyRecords) => {
+      res.render('index', { 
+        defects: defectsPareto,
+        PDdata: dailyRecords });
+    });
+    })
 });
 
 app.listen(3000, () => {

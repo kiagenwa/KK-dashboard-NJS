@@ -1,6 +1,8 @@
-module.exports = { defectCriterions }
+module.exports = { 
+  defectPareto,
+  dailyRecord }
 
-function defectCriterions (days, pdtype) {
+function defectPareto (days, pdtype) {
   // This query returns defectname, qty, and dppm for each item
   // on the specific pdtype in the last specified days.
   return `
@@ -40,3 +42,42 @@ function defectCriterions (days, pdtype) {
   `
 }
 
+function dailyRecord (days, pdtype) {
+  return `
+  DECLARE @DAYS_DATA INT;
+  DECLARE @PD_TYPE INT;
+  
+  SET @PD_TYPE = ${pdtype};
+  SET @DAYS_DATA = ${days};
+  
+  SELECT
+    TOP (@DAYS_DATA)
+    dailyPD.dateID,
+    PDinput,
+    PDoutput,
+    d.defect_qty,
+    dailyPD.modelID,
+    fullname model_name,
+    recorddate,
+    weeknum
+  FROM
+    dailyPD LEFT JOIN
+    model ON dailyPD.modelID = model.ID LEFT JOIN
+    datetable ON dailyPD.dateID = datetable.ID LEFT JOIN
+    (
+    SELECT
+    dateID,
+    SUM(qty) defect_qty,
+    modelID
+  FROM
+    dailydefects LEFT JOIN
+    defect ON dailydefects.defectID = defect.ID
+  WHERE pdtypeID = (@PD_TYPE)
+  GROUP BY
+    dateID, modelID
+    ) d ON dailyPD.dateID = d.dateID AND dailyPD.modelID = d.modelID
+  WHERE pdtypeID = (@PD_TYPE)
+  ORDER BY
+    dateID DESC;
+  `
+}

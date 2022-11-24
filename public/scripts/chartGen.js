@@ -1,7 +1,7 @@
 // Copyright 2021 Observable, Inc.
 // Released under the ISC license.
 // https://observablehq.com/@d3/horizontal-bar-chart
-function BarChart(data, elementId, {
+function BarChartHorizontal(data, elementId, {
   x = d => d, // given d in data, returns the (quantitative) x-value
   y = (d, i) => i, // given d in data, returns the (ordinal) y-value
   title, // given d in data, returns the title text

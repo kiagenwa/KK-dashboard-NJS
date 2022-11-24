@@ -16,28 +16,39 @@ html
       .omni-logo { 
         max-width: 200px;
         margin-bottom: 10px;}
+      .dashboardBox {
+        display: flex;
+      }
+      .dashboardItem {
+        border: 1px solid black;
+      }
   body
     main#main
     h1 Omni Cambodia Quality Dashboard - Top 10 defect criterions in the last 7 working days
     div#dashboard
-      div#defectBar
-        block defectBar
-          p defect pareto chart goes here!
-      div#dailyFAOutput
-        block dailyFAOutput
-          p daily final assembly output goes here!
-      div#defectTable
-        block defectTable
-          p defect table with qty and FOR is here!
-      div#weeklyFOR
-        block weeklyFOR
-          p defect FOR for weekly goes here!
-      div#overallFOR
-        block overallFOR
-          p a meter to show overall %FOR is here!
-      div#dateFilter
-        block dateFilter
-          p a filter to select data time period goes here!
+      div.dashboardBox
+        div#defectBar.dashboardItem
+          block defectBar
+            p defect pareto chart goes here!
+        div#dailyFAOutput.dashboardItem
+          block dailyFAOutput
+            p daily final assembly output goes here!
+      div.dashboardBox
+        div#defectTable.dashboardItem
+          block defectTable
+            p defect table with qty and FOR is here!
+        div#weeklyFOR.dashboardItem
+          block weeklyFOR
+            p defect FOR for weekly goes here!
+        div#modelQty.dashboardItem
+          block modelBar
+            p quantity of each model is shown here!
+        div#overallFOR.dashboardItem
+          block overallFOR
+            p a meter to show overall %FOR is here!
+        div#dateFilter.dashboardItem
+          block dateFilter
+            p a filter to select data time period goes here!
     block footer
       footer
         img.omni-logo(src='/images/Logo-Horizontal.jpg' alt="Omni logo")

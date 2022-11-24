@@ -7,11 +7,12 @@ block defectBar
   div#paretoChart
   script.
     const top10data = !{JSON.stringify(defects)}.slice(0,-1);
-    BarChart(top10data, 'paretoChart', {
+    BarChartHorizontal(top10data, 'paretoChart', {
       x: d => d.dppm,
       y: d => d.defectname,
       yDomain: top10data.map(d => d.defectname),
       height: 400,
+      marginRight: 20
       marginLeft: 100,
       xLabel: "dppm in the last 7 operation days",
       color: "steelblue"

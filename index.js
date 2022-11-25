@@ -63,12 +63,21 @@ app.get('/', (_, res) => {
     // take out 10th+ pareto data
     if (defectsPareto.length > 11) defectsPareto.splice(10, defectsPareto.length - 11)
     executeStatement(qG.dailyRecord(7, 3), (dailyRecords) => {
-      //res.json(dailyRecords);
+      const weeklyFOR = {};
+      dailyRecords.forEach(d => {
+        if (weeklyFOR[d.weeknum] === undefined) weeklyFOR[d.weeknum] = [ d.defect_qty, d.PDinput];
+        else {
+          weeklyFOR[d.weeknum][0] += d.defect_qty;
+          weeklyFOR[d.weeknum][1] += d.PDinput;
+        }
+      });
+      //res.json(weeklyFOR);
       res.render('index', { 
+        weeklyFOR: weeklyFOR,
         defects: defectsPareto,
         PDdata: dailyRecords });
       });
-    })
+    });
 });
 
 app.listen(3000, () => {

@@ -22,6 +22,7 @@ function BarChartHorizontal(data, elementId, {
   color = "currentColor", // bar fill color
   titleColor = "white", // title fill color when atop bar
   titleAltColor = "currentColor", // title fill color when atop background
+  maxBarHeight = 80,    // maximum bar height
 } = {}) {
   // Compute values.
   const X = d3.map(data, x);
@@ -54,6 +55,11 @@ function BarChartHorizontal(data, elementId, {
     const T = title;
     title = i => T(O[i], i, data);
   }
+  // put a limit to how thick a bar can be!
+  let barHeight;
+  if (maxBarHeight < yScale.bandwidth()) barHeight = maxBarHeight;
+  else barHeight = yScale.bandwidth();
+  console.log(yScale.bandwidth());
 
   const svg = d3.select('#' + elementId)
       .append("svg")
@@ -82,9 +88,9 @@ function BarChartHorizontal(data, elementId, {
     .data(I)
     .join("rect")
       .attr("x", xScale(0))
-      .attr("y", i => yScale(Y[i]))
+      .attr("y", i => yScale(Y[i]) + yScale.bandwidth() / 2 - barHeight / 2)
       .attr("width", i => xScale(X[i]) - xScale(0))
-      .attr("height", yScale.bandwidth());
+      .attr("height", barHeight);
 
   svg.append("g")
       .attr("fill", titleColor)
@@ -129,7 +135,8 @@ function BarChartVertical(data, elementId, {
   xPadding = 0.1, // amount of x-range to reserve to separate bars
   yFormat, // a format specifier string for the y-axis
   yLabel, // a label for the y-axis
-  color = "currentColor" // bar fill color
+  color = "currentColor", // bar fill color
+  maxBarWidth = 80,   // maximum bar width
 } = {}) {
   // Compute values.
   const X = d3.map(data, x);
@@ -159,6 +166,12 @@ function BarChartVertical(data, elementId, {
     title = i => T(O[i], i, data);
   }
 
+  // put a limit to how thick a bar can be!
+  let barWidth;
+  if (maxBarWidth < xScale.bandwidth()) barWidth = maxBarWidth;
+  else barWidth = xScale.bandwidth();
+  console.log(xScale.bandwidth());
+
   const svg = d3.select('#' + elementId)
       .append("svg")
       .attr("width", width)
@@ -185,10 +198,10 @@ function BarChartVertical(data, elementId, {
     .selectAll("rect")
     .data(I)
     .join("rect")
-      .attr("x", i => xScale(X[i]))
+      .attr("x", i => xScale(X[i]) + xScale.bandwidth() / 2 - barWidth / 2)
       .attr("y", i => yScale(Y[i]))
       .attr("height", i => yScale(0) - yScale(Y[i]))
-      .attr("width", xScale.bandwidth());
+      .attr("width", barWidth);
 
   if (title) bar.append("title")
       .text(title);

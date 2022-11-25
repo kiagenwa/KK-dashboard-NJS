@@ -74,6 +74,7 @@ app.get('/', (_, res) => {
         if (model_qty[d.model_name] === undefined) model_qty[d.model_name] = d.PDoutput;
         else model_qty[d.model_name] += d.PDoutput;
       });
+      model_qty["RC265"] = 20000;
       //res.json(model_qty);
       res.render('index', { 
         weeklyFOR: weeklyFOR,

@@ -22,18 +22,25 @@ html
       .dashboardItem {
         border: 1px solid black;
       }
+      #defectBar, #dailyFAOutput {
+        width: 50%
+      }
+      #defectTable {
+        font-size: 10px;
+        padding: 0 10px 0;
+      }
   body
-    main#main
-    h1 Omni Cambodia Quality Dashboard - Top 10 defect criterions in the last 7 working days
+    main#mains
+    h1 Omni Cambodia Quality Dashboard
     div#dashboard
-      div.dashboardBox
+      div.dashboardBox#topBox
         div#defectBar.dashboardItem
           block defectBar
             p defect pareto chart goes here!
         div#dailyFAOutput.dashboardItem
           block dailyFAOutput
             p daily final assembly output goes here!
-      div.dashboardBox
+      div.dashboardBox#bottomBox
         div#defectTable.dashboardItem
           block defectTable
             p defect table with qty and FOR is here!

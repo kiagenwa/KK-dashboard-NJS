@@ -71,4 +71,24 @@ block weeklyFOR
       marginLeft: 50,
       yLabel: "units produced",
       color: "steelblue"
-    })
+    });
+
+block modelBar
+  div#modelBar
+  script.
+    const model_qty = !{JSON.stringify(model_qty)};
+    const modelOutput = [];
+    for (const model in model_qty)
+      modelOutput.push({
+        model_name: model,
+        output_qty: model_qty[model]
+      });
+    BarChartHorizontal(modelOutput, 'modelBar', {
+      x: d => d.output_qty,
+      y: d => d.model_name,
+      height: 500,
+      marginRight: 20,
+      marginLeft: 100,
+      xLabel: "pcs",
+      color: "steelblue"
+    });

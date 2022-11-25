@@ -197,5 +197,5 @@ function BarChartVertical(data, elementId, {
       .attr("transform", `translate(0,${height - marginBottom})`)
       .call(xAxis);
 
-  return svg.node();
+  //return svg.node();
 }

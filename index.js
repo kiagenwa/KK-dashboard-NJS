@@ -77,6 +77,7 @@ app.get('/', (_, res) => {
       //res.json(model_qty);
       res.render('index', { 
         weeklyFOR: weeklyFOR,
+        model_qty: model_qty,
         defects: defectsPareto,
         PDdata: dailyRecords });
       });

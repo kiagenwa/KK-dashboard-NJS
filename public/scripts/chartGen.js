@@ -23,6 +23,7 @@ function BarChartHorizontal(data, elementId, {
   titleColor = "white", // title fill color when atop bar
   titleAltColor = "currentColor", // title fill color when atop background
   maxBarHeight = 80,    // maximum bar height
+  target,
 } = {}) {
   // Compute values.
   const X = d3.map(data, x);
@@ -59,7 +60,6 @@ function BarChartHorizontal(data, elementId, {
   let barHeight;
   if (maxBarHeight < yScale.bandwidth()) barHeight = maxBarHeight;
   else barHeight = yScale.bandwidth();
-  console.log(yScale.bandwidth());
 
   const svg = d3.select('#' + elementId)
       .append("svg")
@@ -81,6 +81,19 @@ function BarChartHorizontal(data, elementId, {
           .attr("fill", "currentColor")
           .attr("text-anchor", "end")
           .text(xLabel));
+  
+  // add a target line if it is defined
+  if (target != undefined) {
+    svg.append("line")
+      .attr("fill", "none")
+      .attr("stroke", "red")
+      .attr("stroke-width", 1.5)
+      .attr("stroke-opacity", 1)
+      .attr("x1", xScale(target))
+      .attr("x2", xScale(target))
+      .attr("y1", yRange[0] + 10)
+      .attr("y2", yRange[1] - 10)
+  }
 
   svg.append("g")
       .attr("fill", color)
@@ -129,6 +142,7 @@ function BarChartVertical(data, elementId, {
   height = 400, // the outer height of the chart, in pixels
   xDomain, // an array of (ordinal) x-values
   xRange = [marginLeft, width - marginRight], // [left, right]
+  xType = d3.scaleBand,
   yType = d3.scaleLinear, // y-scale type
   yDomain, // [ymin, ymax]
   yRange = [height - marginBottom, marginTop], // [bottom, top]
@@ -137,6 +151,7 @@ function BarChartVertical(data, elementId, {
   yLabel, // a label for the y-axis
   color = "currentColor", // bar fill color
   maxBarWidth = 80,   // maximum bar width
+  target,     // put a target to chart
 } = {}) {
   // Compute values.
   const X = d3.map(data, x);
@@ -151,7 +166,7 @@ function BarChartVertical(data, elementId, {
   const I = d3.range(X.length).filter(i => xDomain.has(X[i]));
 
   // Construct scales, axes, and formats.
-  const xScale = d3.scaleBand(xDomain, xRange).padding(xPadding);
+  const xScale = xType(xDomain, xRange).padding(xPadding);
   const yScale = yType(yDomain, yRange);
   const xAxis = d3.axisBottom(xScale).tickSizeOuter(0);
   const yAxis = d3.axisLeft(yScale).ticks(height / 40, yFormat);
@@ -170,7 +185,6 @@ function BarChartVertical(data, elementId, {
   let barWidth;
   if (maxBarWidth < xScale.bandwidth()) barWidth = maxBarWidth;
   else barWidth = xScale.bandwidth();
-  console.log(xScale.bandwidth());
 
   const svg = d3.select('#' + elementId)
       .append("svg")
@@ -192,6 +206,19 @@ function BarChartVertical(data, elementId, {
           .attr("fill", "currentColor")
           .attr("text-anchor", "start")
           .text(yLabel));
+  
+  // add a target line if it is defined
+  if (target != undefined) {
+    svg.append("line")
+      .attr("fill", "none")
+      .attr("stroke", "red")
+      .attr("stroke-width", 1.5)
+      .attr("stroke-opacity", 1)
+      .attr("x1", xRange[0] + 10)
+      .attr("x2", xRange[1] - 10)
+      .attr("y1", yScale(target))
+      .attr("y2", yScale(target))
+  }
 
   const bar = svg.append("g")
       .attr("fill", color)

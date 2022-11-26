@@ -9,11 +9,11 @@ block defectBar
       x: d => d.dppm,
       y: d => d.defectname,
       height: 500,
-      //width: document.getElementById('topBox').style.width * 0.4,
       marginRight: 20,
       marginLeft: 100,
       xLabel: "dppm",
-      color: "steelblue"
+      color: "steelblue",
+      target: 1000
     });
 
 block dailyFAOutput
@@ -27,7 +27,6 @@ block dailyFAOutput
       x: d => d.recorddate.toLocaleDateString(),
       y: d => d.PDoutput,
       xDomain: d3.groupSort(dailyPD, d => d.dateID, d => d.recorddate.toLocaleDateString()),
-      //width: document.getElementById('topBox').style.width * 0.6,
       height: 500,
       marginRight: 30,
       marginLeft: 50,
@@ -66,7 +65,8 @@ block weeklyFOR
       marginRight: 30,
       marginLeft: 50,
       yLabel: "units produced",
-      color: "steelblue"
+      color: "steelblue",
+      target: 5000
     });
 
 block modelBar

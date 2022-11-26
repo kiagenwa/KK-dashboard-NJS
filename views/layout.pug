@@ -16,11 +16,20 @@ html
       .omni-logo { 
         max-width: 200px;
         margin-bottom: 10px;}
+      #dashboard {
+        width: 100%
+      }
       .dashboardBox {
         display: flex;
       }
+      .dashboardBox .dashboardBox {
+        flex-direction: column;
+      }
       .dashboardItem {
         border: 1px solid black;
+      }
+      .dashboardBox .dashboardBox .dashboardItem {
+        height: 50%;
       }
       #defectBar, #dailyFAOutput {
         width: 50%
@@ -50,12 +59,13 @@ html
         div#modelQty.dashboardItem
           block modelBar
             p quantity of each model is shown here!
-        div#overallFOR.dashboardItem
-          block overallFOR
-            p a meter to show overall %FOR is here!
-        div#dateFilter.dashboardItem
-          block dateFilter
-            p a filter to select data time period goes here!
+        div.dashboardBox
+          div#overallFOR.dashboardItem
+            block overallFOR
+              p a meter to show overall %FOR is here!
+          div#dateFilter.dashboardItem
+            block dateFilter
+              p a filter to select data time period goes here!
     block footer
       footer
         img.omni-logo(src='/images/Logo-Horizontal.jpg' alt="Omni logo")

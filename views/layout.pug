@@ -11,33 +11,7 @@ html
     link(rel='manifest' href='/images/favico/site.webmanifest')
     script(src='./d3/dist/d3.js')
     script(src="/scripts/chartGen.js")
-    style.
-      footer { margin: 35px 0 15px 25px;}
-      .omni-logo { 
-        max-width: 200px;
-        margin-bottom: 10px;}
-      #dashboard {
-        width: 100%
-      }
-      .dashboardBox {
-        display: flex;
-      }
-      .dashboardBox .dashboardBox {
-        flex-direction: column;
-      }
-      .dashboardItem {
-        border: 1px solid black;
-      }
-      .dashboardBox .dashboardBox .dashboardItem {
-        height: 50%;
-      }
-      #defectBar, #dailyFAOutput {
-        width: 50%
-      }
-      #defectTable {
-        font-size: 10px;
-        padding: 0 10px 0;
-      }
+    link(rel='stylesheet' href='./index.css')
   body
     main#mains
     h1 Omni Cambodia Quality Dashboard
@@ -73,3 +47,4 @@ html
           | © #{new Date().getFullYear()}
           br
           | Home Control Singapore
+    script(src='./js/bootstrap.min.js')

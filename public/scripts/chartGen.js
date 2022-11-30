@@ -239,3 +239,107 @@ function BarChartVertical(data, elementId, {
 
   //return svg.node();
 }
+
+function MeterChart(value, elementId, {
+  title,
+  marginTop = 20, // the top margin, in pixels
+  marginRight = 15, // the right margin, in pixels
+  marginBottom = 30, // the bottom margin, in pixels
+  marginLeft = 15, // the left margin, in pixels
+  paddingBottom = 20,
+  colorValue = "steelblue",
+  colorBlank = "#F5F5F5",
+  startValue = 0,
+  endValue = 2,
+  width = 200,
+  height = 100,
+  target
+} = {}) {
+  // setting up data. `value` is percentage (should be less than 2)
+  const text = value.toFixed(2) + '%';
+  const data = [value - startValue, endValue - value - startValue];
+  const anglesRange = 0.5 * Math.PI;
+  const radis = Math.min(width, 2*height) / 2;
+  const thickness = radis / 3;
+  const colors = [colorValue, colorBlank];
+
+  const pies = d3.pie()
+    .value(d => d)
+    .sort(null)
+    .startAngle(anglesRange * -1)
+    .endAngle(anglesRange)
+
+  const arc = d3.arc()
+    .outerRadius(radis)
+    .innerRadius(radis - thickness)
+
+  const translation = (x, y) => `translate(${x}, ${y})`
+
+  const svg = d3.select('#' + elementId).append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .attr("padding-bottom", paddingBottom)
+    .append("g")
+    .attr("transform", translation(width / 2, height - paddingBottom))
+  
+  if (title) {
+    svg.append("text").text(title)
+      .attr("dy", -width/2-10 + "px")
+      .attr("dx", -width/2 + "px")
+      .attr("text-anchor", "start")
+      .attr("font-size", radis / 5 + "px")
+      .attr("font-weight", "bold")
+  }
+
+  svg.selectAll("path")
+    .data(pies(data))
+    .enter()
+    .append("path")
+    .attr("fill", (_, i) => colors[i])
+    .attr("d", arc)
+
+  svg.append("text")
+    .text(text)
+    .attr("dy", "-" + radis/15 +"px")
+    .attr("text-anchor", "middle")
+    .attr("font-size", radis / 3 + 'px')
+  
+  svg.append("text")
+    .text(startValue + '%')
+    .attr("dy", paddingBottom + "px")
+    .attr("dx", -(radis - thickness/2))
+    .attr("text-anchor", "middle")
+
+  svg.append("text")
+    .text(endValue + '%')
+    .attr("dy", paddingBottom + "px")
+    .attr("dx", radis - thickness/2)
+    .attr("text-anchor", "middle")
+  
+  // add a target line if it is defined
+  if (target != undefined) {
+    // calculate reference points using trigonometry
+    const flipper = target - startValue < (endValue - startValue) / 2 ? -1:1;
+    const outerX = -1 * radis * Math.cos(Math.PI * target / endValue);
+    const outerY = -1 * radis * Math.sin(Math.PI * target / endValue);
+    const innerX = -1 * (radis - thickness) * Math.cos(Math.PI * target / endValue);
+    const innerY = -1 * (radis - thickness) * Math.sin(Math.PI * target / endValue);
+
+    svg.append("line")
+      .attr("fill", "none")
+      .attr("stroke", "red")
+      .attr("stroke-width", 1.5)
+      .attr("stroke-opacity", 1)
+      .attr("x1", (outerX + flipper * 3) + "px")
+      .attr("x2", innerX + "px")
+      .attr("y1", (outerY - 3) + "px")
+      .attr("y2", innerY + "px")
+    
+      svg.append("text")
+        .text(target + '%')
+        .attr("dx", (outerX + flipper * 3) + "px")
+        .attr("dy", (outerY - 3) + "px")
+        .attr("text-anchor", "end")
+        .attr("font-size", radis / 8 + 'px')
+  }
+}

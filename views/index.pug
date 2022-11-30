@@ -89,3 +89,20 @@ block modelBar
       xLabel: "pcs",
       color: "steelblue"
     });
+
+block overallFOR
+  div#rateMeter
+    script.
+      const allDefects = !{JSON.stringify(defects[10].dppm)} / 10000.00;
+      document.addEventListener("DOMContentLoaded", (value) => {
+        // needs them width and height from DOM
+        MeterChart(allDefects, 'rateMeter', {
+          title: "overall %FOR",
+          startValue: 0,
+          endValue: 2,
+          width: document.getElementById('overallFOR').clientWidth *0.9,
+          height: document.getElementById('overallFOR').clientHeight *0.9,
+          target: 0.5
+        });
+      });
+      

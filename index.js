@@ -74,7 +74,7 @@ app.get('/', (_, res) => {
         if (model_qty[d.model_name] === undefined) model_qty[d.model_name] = d.PDoutput;
         else model_qty[d.model_name] += d.PDoutput;
       });
-      //res.json(model_qty);
+      //res.json(defectsPareto[10]);
       res.render('index', { 
         weeklyFOR: weeklyFOR,
         model_qty: model_qty,

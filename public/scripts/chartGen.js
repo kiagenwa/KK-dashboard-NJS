@@ -259,7 +259,7 @@ function MeterChart(value, elementId, {
   const text = value.toFixed(2) + '%';
   const data = [value - startValue, endValue - value - startValue];
   const anglesRange = 0.5 * Math.PI;
-  const radis = Math.min(width, 2*height) / 2;
+  const radis = Math.min(width, 2*height) / 2 - 1.8*paddingBottom;
   const thickness = radis / 3;
   const colors = [colorValue, colorBlank];
 
@@ -284,8 +284,8 @@ function MeterChart(value, elementId, {
   
   if (title) {
     svg.append("text").text(title)
-      .attr("dy", -width/2-10 + "px")
-      .attr("dx", -width/2 + "px")
+      .attr("dy", -radis-10 + "px")
+      .attr("dx", -radis + "px")
       .attr("text-anchor", "start")
       .attr("font-size", radis / 5 + "px")
       .attr("font-weight", "bold")

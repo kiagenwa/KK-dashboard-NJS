@@ -91,7 +91,7 @@ block modelBar
     });
 
 block overallFOR
-  div#rateMeter
+  div#rateMeter.h-100
     script.
       const allDefects = !{JSON.stringify(defects[10].dppm)} / 10000.00;
       document.addEventListener("DOMContentLoaded", (value) => {
@@ -106,3 +106,15 @@ block overallFOR
         });
       });
       
+block dateFilter
+  h3 Timer selector
+  form(action="/select" method="POST" display="")
+    fieldset
+      legend Start and end week# (YYWW)
+      label(for="startWeek") start 
+      input(type="number" id="startWeek" name="startWeek" value="2247" size="5")
+      br/
+      label(for="endWeek") end 
+      input(type="number" id="endWeek" name="endWeek" value="2248" size="5")
+      br/
+      input(type="submit" value="Go")

@@ -2,6 +2,7 @@ const express = require('express');
 const Connection = require('tedious').Connection;
 const Request = require('tedious').Request;
 const path = require('path');
+const bodyParser = require('body-parser');
 
 const qG = require('./original/queryGen.js');
 
@@ -59,10 +60,10 @@ function executeStatement(sqlQuery, callback) {
 }
 
 app.get('/', (_, res) => {
-  executeStatement(qG.defectPareto(7, 3), (defectsPareto) => {
+  executeStatement(qG.defectParetoWeeks(2247, 2248, 3), (defectsPareto) => {
     // take out 10th+ pareto data
     if (defectsPareto.length > 11) defectsPareto.splice(10, defectsPareto.length - 11)
-    executeStatement(qG.dailyRecord(7, 3), (dailyRecords) => {
+    executeStatement(qG.dailyRecordWeeks(2247, 2248, 3), (dailyRecords) => {
       const weeklyFOR = {};
       const model_qty = {};
       dailyRecords.forEach(d => {
@@ -82,6 +83,10 @@ app.get('/', (_, res) => {
         PDdata: dailyRecords });
       });
     });
+});
+
+app.post("/select", bodyParser.urlencoded({extended: false}), (req, res) => {
+  res.json(req.body);
 });
 
 app.listen(3000, () => {

@@ -165,3 +165,12 @@ function dailyRecordWeeks (startWeek, endWeek, pdtype) {
     dateID DESC;
   `
 }
+
+function getLatestWeek () {
+  return `
+  SELECT TOP 1 weeknum
+  FROM dailyPD LEFT JOIN datetable ON
+  dailyPD.dateID = datetable.ID
+  ORDER BY weeknum DESC;
+  `
+}

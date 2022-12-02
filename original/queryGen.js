@@ -45,6 +45,7 @@ function defectPareto (days, pdtype) {
 }
 
 function defectParetoWeeks (startWeek, endWeek, pdtype) {
+  // refrain from using BETWEEN as the engine has to interpret each time and cause delay.
   return `
   DECLARE @TTL_PD_QTY FLOAT;
   DECLARE @PD_TYPE INT;
@@ -58,7 +59,7 @@ function defectParetoWeeks (startWeek, endWeek, pdtype) {
   SELECT @TTL_PD_QTY = SUM(PDinput)
   FROM dailyPD LEFT JOIN
     datetable ON dailyPD.dateID = datetable.ID
-  WHERE pdtypeID = (@PD_TYPE) AND weeknum BETWEEN (@START_WEEK) AND (@END_WEEK)
+  WHERE pdtypeID = (@PD_TYPE) AND weeknum >= (@START_WEEK) AND weeknum <= (@END_WEEK)
 
   SELECT defectname, 
     quantity,
@@ -70,7 +71,7 @@ function defectParetoWeeks (startWeek, endWeek, pdtype) {
     dailydefects LEFT JOIN 
     defect ON dailydefects.defectID = defect.ID 
     LEFT JOIN datetable ON dailydefects.dateID = datetable.ID
-    WHERE pdtypeID = (@PD_TYPE) AND weeknum BETWEEN (@START_WEEK) AND (@END_WEEK)
+    WHERE pdtypeID = (@PD_TYPE) AND weeknum >= (@START_WEEK) AND weeknum <= (@END_WEEK)
     GROUP BY defectname
   UNION ALL
   SELECT 'TOTAL', sum(qty)
@@ -78,7 +79,7 @@ function defectParetoWeeks (startWeek, endWeek, pdtype) {
     dailydefects LEFT JOIN 
     defect ON dailydefects.defectID = defect.ID 
     LEFT JOIN datetable ON dailydefects.dateID = datetable.ID
-    WHERE pdtypeID = (@PD_TYPE) AND weeknum BETWEEN (@START_WEEK) AND (@END_WEEK)
+    WHERE pdtypeID = (@PD_TYPE) AND weeknum >= (@START_WEEK) AND weeknum <= (@END_WEEK)
   ) x
   ORDER BY CASE WHEN x.defectname = 'TOTAL' THEN 1 ELSE 0 END, quantity DESC;
   `
@@ -159,7 +160,7 @@ function dailyRecordWeeks (startWeek, endWeek, pdtype) {
   GROUP BY
     dateID, modelID
     ) d ON dailyPD.dateID = d.dateID AND dailyPD.modelID = d.modelID
-  WHERE pdtypeID = (@PD_TYPE) AND weeknum BETWEEN (@START_WEEK) AND (@END_WEEK)
+  WHERE pdtypeID = (@PD_TYPE) AND weeknum >= (@START_WEEK) AND weeknum <= (@END_WEEK)
   ORDER BY
     dateID DESC;
   `

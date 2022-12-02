@@ -29,7 +29,8 @@ const sqlConfig = {
   options: {
     instanceName: process.env.MSSQL_INSTANCE,
     trustServerCertificate: true, 
-    database: process.env.MSSQL_DBNAME
+    database: process.env.MSSQL_DBNAME,
+    //requestTimeout: 0   // for debug when query slow
   }
 };
 
@@ -59,11 +60,11 @@ function executeStatement(sqlQuery, callback) {
   connection.execSql(request);
 }
 
-app.get('/', (_, res) => {
-  executeStatement(qG.defectParetoWeeks(2247, 2248, 3), (defectsPareto) => {
+function mainDashboard(startWeek, endWeek, pdtype, res) {
+  executeStatement(qG.defectParetoWeeks(startWeek, endWeek, pdtype), (defectsPareto) => {
     // take out 10th+ pareto data
     if (defectsPareto.length > 11) defectsPareto.splice(10, defectsPareto.length - 11)
-    executeStatement(qG.dailyRecordWeeks(2247, 2248, 3), (dailyRecords) => {
+    executeStatement(qG.dailyRecordWeeks(startWeek, endWeek, pdtype), (dailyRecords) => {
       const weeklyFOR = {};
       const model_qty = {};
       dailyRecords.forEach(d => {
@@ -80,13 +81,20 @@ app.get('/', (_, res) => {
         weeklyFOR: weeklyFOR,
         model_qty: model_qty,
         defects: defectsPareto,
-        PDdata: dailyRecords });
+        PDdata: dailyRecords,
+        startWeek: startWeek,
+        endWeek: endWeek });
       });
     });
+}
+
+app.get('/', (_, res) => {
+  mainDashboard(2247, 2248, 3, res);
 });
 
 app.post("/select", bodyParser.urlencoded({extended: false}), (req, res) => {
-  res.json(req.body);
+  //res.json(req.body);   // startWeek and endWeek
+  mainDashboard(req.body.startWeek, req.body.endWeek, 3, res);
 });
 
 app.listen(3000, () => {

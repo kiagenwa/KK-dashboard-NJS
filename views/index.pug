@@ -112,9 +112,12 @@ block dateFilter
     fieldset
       legend Start and end week# (YYWW)
       label(for="startWeek") start 
-      input(type="number" id="startWeek" name="startWeek" value="2247" size="5")
+      input(type="number" id="startWeek" name="startWeek" size="5")
       br/
       label(for="endWeek") end 
-      input(type="number" id="endWeek" name="endWeek" value="2248" size="5")
+      input(type="number" id="endWeek" name="endWeek" size="5")
       br/
       input(type="submit" value="Go")
+    script.
+      document.getElementById('startWeek').value = !{JSON.stringify(startWeek)}
+      document.getElementById('endWeek').value = !{JSON.stringify(endWeek)}

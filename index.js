@@ -38,6 +38,22 @@ const connection = new Connection(sqlConfig);
 connection.on('connect', function(err) {
   if (err) console.log(err);
   else console.log('Connected to JR_OMNI database.');
+  // as this app mainly uses data from the DB, let's connect it first.
+  executeStatement(qG.getLatestWeek(), weeks => {
+    app.get('/', (_, res) => {
+      //res.json(weeks);
+      mainDashboard(weeks[1].weeknum, weeks[0].weeknum, 3, res);
+    });
+    
+    app.post("/select", bodyParser.urlencoded({extended: false}), (req, res) => {
+      //res.json(req.body);   // startWeek and endWeek
+      mainDashboard(req.body.startWeek, req.body.endWeek, 3, res);
+    });
+    
+    app.listen(3000, () => {
+      console.log('Listening on port 3000...');
+    });
+  });
 });
 connection.connect();
 
@@ -87,16 +103,3 @@ function mainDashboard(startWeek, endWeek, pdtype, res) {
       });
     });
 }
-
-app.get('/', (_, res) => {
-  mainDashboard(2247, 2248, 3, res);
-});
-
-app.post("/select", bodyParser.urlencoded({extended: false}), (req, res) => {
-  //res.json(req.body);   // startWeek and endWeek
-  mainDashboard(req.body.startWeek, req.body.endWeek, 3, res);
-});
-
-app.listen(3000, () => {
-  console.log('Listening on port 3000...');
-})

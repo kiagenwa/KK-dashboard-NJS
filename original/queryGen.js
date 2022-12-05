@@ -2,7 +2,8 @@ module.exports = {
   defectPareto,
   defectParetoWeeks,
   dailyRecord,
-  dailyRecordWeeks }
+  dailyRecordWeeks,
+  getLatestWeek }
 
 function defectPareto (days, pdtype) {
   // This query returns defectname, qty, and dppm for each item
@@ -168,9 +169,10 @@ function dailyRecordWeeks (startWeek, endWeek, pdtype) {
 
 function getLatestWeek () {
   return `
-  SELECT TOP 1 weeknum
+  SELECT TOP 2 weeknum
   FROM dailyPD LEFT JOIN datetable ON
   dailyPD.dateID = datetable.ID
+  GROUP BY weeknum
   ORDER BY weeknum DESC;
   `
 }

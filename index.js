@@ -44,7 +44,7 @@ connection.on('connect', function(err) {
       //res.json(weeks);
       mainDashboard(weeks[1].weeknum, weeks[0].weeknum, 3, res);
     });
-    
+
     app.post("/select", bodyParser.urlencoded({extended: false}), (req, res) => {
       //res.json(req.body);   // startWeek and endWeek
       mainDashboard(req.body.startWeek, req.body.endWeek, 3, res);

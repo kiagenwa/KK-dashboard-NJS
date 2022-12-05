@@ -64,18 +64,19 @@ function defectParetoWeeks (startWeek, endWeek, pdtype) {
 
   SELECT defectname, 
     quantity,
-    CAST(quantity/@TTL_PD_QTY*1000000 AS INT) dppm
+    CAST(quantity/@TTL_PD_QTY*1000000 AS INT) dppm,
+    pdtypeID
   FROM 
   (SELECT
-    defectname, sum(qty) quantity 
+    defectname, sum(qty) quantity, pdtypeID
   FROM 
     dailydefects LEFT JOIN 
     defect ON dailydefects.defectID = defect.ID 
     LEFT JOIN datetable ON dailydefects.dateID = datetable.ID
     WHERE pdtypeID = (@PD_TYPE) AND weeknum >= (@START_WEEK) AND weeknum <= (@END_WEEK)
-    GROUP BY defectname
+    GROUP BY defectname, pdtypeID
   UNION ALL
-  SELECT 'TOTAL', sum(qty)
+  SELECT 'TOTAL', sum(qty), NULL
   FROM 
     dailydefects LEFT JOIN 
     defect ON dailydefects.defectID = defect.ID 
@@ -143,6 +144,7 @@ function dailyRecordWeeks (startWeek, endWeek, pdtype) {
     d.defect_qty,
     dailyPD.modelID,
     fullname model_name,
+    pdtypeID,
     recorddate,
     weeknum
   FROM

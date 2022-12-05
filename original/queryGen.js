@@ -48,42 +48,7 @@ function defectPareto (days, pdtype) {
 function defectParetoWeeks (startWeek, endWeek, pdtype) {
   // refrain from using BETWEEN as the engine has to interpret each time and cause delay.
   return `
-  DECLARE @TTL_PD_QTY FLOAT;
-  DECLARE @PD_TYPE INT;
-  DECLARE @START_WEEK INT;
-  DECLARE @END_WEEK INT;
-
-  SET @PD_TYPE = ${pdtype};
-  SET @START_WEEK = ${startWeek};
-  SET @END_WEEK = ${endWeek};
-
-  SELECT @TTL_PD_QTY = SUM(PDinput)
-  FROM dailyPD LEFT JOIN
-    datetable ON dailyPD.dateID = datetable.ID
-  WHERE pdtypeID = (@PD_TYPE) AND weeknum >= (@START_WEEK) AND weeknum <= (@END_WEEK)
-
-  SELECT defectname, 
-    quantity,
-    CAST(quantity/@TTL_PD_QTY*1000000 AS INT) dppm,
-    pdtypeID
-  FROM 
-  (SELECT
-    defectname, sum(qty) quantity, pdtypeID
-  FROM 
-    dailydefects LEFT JOIN 
-    defect ON dailydefects.defectID = defect.ID 
-    LEFT JOIN datetable ON dailydefects.dateID = datetable.ID
-    WHERE pdtypeID = (@PD_TYPE) AND weeknum >= (@START_WEEK) AND weeknum <= (@END_WEEK)
-    GROUP BY defectname, pdtypeID
-  UNION ALL
-  SELECT 'TOTAL', sum(qty), NULL
-  FROM 
-    dailydefects LEFT JOIN 
-    defect ON dailydefects.defectID = defect.ID 
-    LEFT JOIN datetable ON dailydefects.dateID = datetable.ID
-    WHERE pdtypeID = (@PD_TYPE) AND weeknum >= (@START_WEEK) AND weeknum <= (@END_WEEK)
-  ) x
-  ORDER BY CASE WHEN x.defectname = 'TOTAL' THEN 1 ELSE 0 END, quantity DESC;
+  EXEC	DefectParetoData ${pdtype}, ${startWeek}, ${endWeek};
   `
 }
 
@@ -129,52 +94,12 @@ function dailyRecord (days, pdtype) {
 
 function dailyRecordWeeks (startWeek, endWeek, pdtype) {
   return `
-  DECLARE @PD_TYPE INT;
-  DECLARE @START_WEEK INT;
-  DECLARE @END_WEEK INT;
-
-  SET @PD_TYPE = ${pdtype};
-  SET @START_WEEK = ${startWeek};
-  SET @END_WEEK = ${endWeek};
-
-  SELECT
-    dailyPD.dateID,
-    PDinput,
-    PDoutput,
-    d.defect_qty,
-    dailyPD.modelID,
-    fullname model_name,
-    pdtypeID,
-    recorddate,
-    weeknum
-  FROM
-    dailyPD LEFT JOIN
-    model ON dailyPD.modelID = model.ID LEFT JOIN
-    datetable ON dailyPD.dateID = datetable.ID LEFT JOIN
-    (
-    SELECT
-    dateID,
-    SUM(qty) defect_qty,
-    modelID
-  FROM
-    dailydefects LEFT JOIN
-    defect ON dailydefects.defectID = defect.ID
-  WHERE pdtypeID = (@PD_TYPE)
-  GROUP BY
-    dateID, modelID
-    ) d ON dailyPD.dateID = d.dateID AND dailyPD.modelID = d.modelID
-  WHERE pdtypeID = (@PD_TYPE) AND weeknum >= (@START_WEEK) AND weeknum <= (@END_WEEK)
-  ORDER BY
-    dateID DESC;
+  EXEC DailyRecordWeeks ${pdtype}, ${startWeek}, ${endWeek};
   `
 }
 
-function getLatestWeek () {
+function getLatestWeek (weeks = "") {
   return `
-  SELECT TOP 2 weeknum
-  FROM dailyPD LEFT JOIN datetable ON
-  dailyPD.dateID = datetable.ID
-  GROUP BY weeknum
-  ORDER BY weeknum DESC;
+  EXEC	GetLatestWeek ${weeks};
   `
 }

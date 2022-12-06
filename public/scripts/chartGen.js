@@ -156,7 +156,7 @@ function BarChartVertical(data, elementId, {
   // Compute values.
   const X = d3.map(data, x);
   const Y = d3.map(data, y);
-
+  
   // Compute default domains, and unique the x-domain.
   if (xDomain === undefined) xDomain = X;
   if (yDomain === undefined) yDomain = [0, d3.max(Y)];
@@ -165,9 +165,21 @@ function BarChartVertical(data, elementId, {
   // Omit any data not present in the x-domain.
   const I = d3.range(X.length).filter(i => xDomain.has(X[i]));
 
-  // Construct scales, axes, and formats.
-  const xScale = xType(xDomain, xRange).padding(xPadding);
-  const yScale = yType(yDomain, yRange);
+  // Construct scales
+  let xScale = xType(xDomain, xRange).padding(xPadding);
+  let yScale = yType(yDomain, yRange);
+
+  // put a limit to how thick a bar can be!
+  let barWidth;
+  if (maxBarWidth < xScale.bandwidth()) barWidth = maxBarWidth;
+  else barWidth = xScale.bandwidth();
+
+  // adjust graph area in case tick labels overwrite issue
+  const longestString = X.reduce((a, b) => {
+    return a.length > b.length ? a:b;
+  });
+
+  //construct axes
   const xAxis = d3.axisBottom(xScale).tickSizeOuter(0);
   const yAxis = d3.axisLeft(yScale).ticks(height / 40, yFormat);
 
@@ -181,10 +193,7 @@ function BarChartVertical(data, elementId, {
     title = i => T(O[i], i, data);
   }
 
-  // put a limit to how thick a bar can be!
-  let barWidth;
-  if (maxBarWidth < xScale.bandwidth()) barWidth = maxBarWidth;
-  else barWidth = xScale.bandwidth();
+
 
   const svg = d3.select('#' + elementId)
       .append("svg")
@@ -236,6 +245,7 @@ function BarChartVertical(data, elementId, {
   svg.append("g")
       .attr("transform", `translate(0,${height - marginBottom})`)
       .call(xAxis);
+
 
   //return svg.node();
 }

@@ -20,13 +20,15 @@ block dailyFAOutput
   div#dailyFAChart
   script.
     const dailyPD = !{JSON.stringify(PDdata)};
+    const dateTimeFormat = new Intl.DateTimeFormat('en-GB', {year:'2-digit', month:'short', day:'numeric'})
     dailyPD.forEach((d) => {
-      d.recorddate = new Date(d.recorddate);
+      //d.recorddate = new Date(d.recorddate);
+      d.recorddate = dateTimeFormat.format(new Date(d.recorddate));
     });
+    dailyPD.sort(d => new Date(d.recorddate));
     BarChartVertical(dailyPD, 'dailyFAChart', {
-      x: d => d.recorddate.toLocaleDateString(),
+      x: d => d.recorddate,
       y: d => d.PDoutput,
-      xDomain: d3.groupSort(dailyPD, d => d.dateID, d => d.recorddate.toLocaleDateString()),
       height: 500,
       marginRight: 30,
       marginLeft: 50,

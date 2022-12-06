@@ -165,11 +165,10 @@ function BarChartVertical(data, elementId, {
   // Omit any data not present in the x-domain.
   const I = d3.range(X.length).filter(i => xDomain.has(X[i]));
 
-  // Construct scales
-  let xScale = xType(xDomain, xRange).padding(xPadding);
-  let yScale = yType(yDomain, yRange);
+  // Construct X scale
+  const xScale = xType(xDomain, xRange).padding(xPadding);
 
-  // put a limit to how thick a bar can be!
+  // determine bar width
   let barWidth;
   if (maxBarWidth < xScale.bandwidth()) barWidth = maxBarWidth;
   else barWidth = xScale.bandwidth();
@@ -178,8 +177,18 @@ function BarChartVertical(data, elementId, {
   const longestString = X.reduce((a, b) => {
     return a.length > b.length ? a:b;
   });
+  const stringSpace = longestString.length * 6
+  // if bar width is smaller than string space, need to rotate x tick texts
+  // firstly, the x axis must be lifted up to provide space to rotated tick
+  if (barWidth < stringSpace) {
+    marginBottom += stringSpace * Math.sin(Math.PI * 0.17);
+    yRange[0] = height - marginBottom;
+  }
 
-  //construct axes
+  // construct Y scale
+  const yScale = yType(yDomain, yRange);
+
+  // construct axes
   const xAxis = d3.axisBottom(xScale).tickSizeOuter(0);
   const yAxis = d3.axisLeft(yScale).ticks(height / 40, yFormat);
 
@@ -192,8 +201,6 @@ function BarChartVertical(data, elementId, {
     const T = title;
     title = i => T(O[i], i, data);
   }
-
-
 
   const svg = d3.select('#' + elementId)
       .append("svg")
@@ -230,7 +237,7 @@ function BarChartVertical(data, elementId, {
   }
 
   const bar = svg.append("g")
-      .attr("fill", color)
+    .attr("fill", color)
     .selectAll("rect")
     .data(I)
     .join("rect")
@@ -242,11 +249,17 @@ function BarChartVertical(data, elementId, {
   if (title) bar.append("title")
       .text(title);
 
-  svg.append("g")
+  const xTicks = svg.append("g")
       .attr("transform", `translate(0,${height - marginBottom})`)
-      .call(xAxis);
-
-
+      .call(xAxis)
+  
+  if (barWidth < stringSpace) {
+    xTicks.selectAll("text")
+      .attr("dx", "-0.5em")
+      .attr("dy", "0.3em")
+      .attr("transform", "rotate(-30)")
+      .attr("text-anchor", "end")
+  }
   //return svg.node();
 }
 

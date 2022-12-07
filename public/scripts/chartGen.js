@@ -197,7 +197,6 @@ function BarChartVertical(data, elementId, {
   // construct other scales
   const yScale = yType(yDomain, yRange);
   const zScale = d3.scaleOrdinal(zDomain, colors);
-  console.log(zScale(Z[1]), Z);
 
   // construct axes
   const xAxis = d3.axisBottom(xScale).tickSizeOuter(0);

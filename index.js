@@ -84,7 +84,6 @@ function mainDashboard(startWeek, endWeek, res, type) {
         defectsPareto: defectsPareto,
         dailyRecords: dailyRecords
       });
-      console.log(data.weeklyFOR)
       res.render('index', { 
         weeklyFOR: data.weeklyFOR,
         model_qty: data.model_qty,
@@ -121,7 +120,6 @@ function digestData (type, data) {
   defects.forEach(d => {
     d.dppm = Math.round(d.quantity * 1000000 / totalInput);
   });
-  console.log(dailyPD)
   dailyPD.forEach(d => {
     if (weeklyFOR[d.weeknum] === undefined) weeklyFOR[d.weeknum] = [ d.defect_qty == 'NULL' ? 0:d.defect_qty, d.PDinput];
     else {

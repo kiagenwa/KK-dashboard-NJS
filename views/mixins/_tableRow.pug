@@ -1,8 +1,8 @@
 mixin tableRow(row)
-  if row.dppm > 999 && row.defectname != 'TOTAL'
+  if row.dppm > 999 && row.criteria != 'TOTAL'
     tr.table-warning
       +rowItems(row)
-  else if row.defectname == 'TOTAL'
+  else if row.criteria == 'TOTAL'
     tr.table-dark
       +rowItems(row)
   else
@@ -10,8 +10,8 @@ mixin tableRow(row)
       +rowItems(row)
 
 mixin rowItems(row)
-  td !{"<b>"}#{row.defectname}!{"</b>"}
-  if row.defectname != 'TOTAL'
+  td !{"<b>"}#{row.criteria}!{"</b>"}
+  if row.criteria != 'TOTAL'
     td #{row.quantity}
     td #{row.dppm}
   else

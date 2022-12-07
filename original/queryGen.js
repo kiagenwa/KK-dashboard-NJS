@@ -45,10 +45,10 @@ function defectPareto (days, pdtype) {
   `
 }
 
-function defectParetoWeeks (startWeek, endWeek, pdtype) {
+function defectParetoWeeks (startWeek, endWeek) {
   // refrain from using BETWEEN as the engine has to interpret each time and cause delay.
   return `
-  EXEC	DefectParetoData ${pdtype}, ${startWeek}, ${endWeek};
+  EXEC	DefectParetoData ${startWeek}, ${endWeek};
   `
 }
 
@@ -92,9 +92,9 @@ function dailyRecord (days, pdtype) {
   `
 }
 
-function dailyRecordWeeks (startWeek, endWeek, pdtype) {
+function dailyRecordWeeks (startWeek, endWeek) {
   return `
-  EXEC DailyRecordWeeks ${pdtype}, ${startWeek}, ${endWeek};
+  EXEC DailyRecordWeeks ${startWeek}, ${endWeek};
   `
 }
 

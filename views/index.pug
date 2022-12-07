@@ -33,8 +33,10 @@ block dailyFAOutput
       BarChartVertical(dailyPD, 'dailyFAChart', {
         x: d => d.recorddate,
         y: d => d.PDoutput,
+        z: d => d.pdtypeID,
         height: document.getElementById('dailyFAChart').clientHeight,
         width: document.getElementById('dailyFAChart').clientWidth,
+        zPadding: 0.1,
         marginRight: 30,
         marginLeft: 50,
         yLabel: "units produced",
@@ -107,7 +109,7 @@ block modelBar
 block overallFOR
   div#rateMeter.h-100
     script.
-      const allDefects = !{JSON.stringify(defects[10].dppm)} / 10000.00;
+      const allDefects = !{JSON.stringify(defects[defects.length - 1].dppm)} / 10000.00;
       document.addEventListener("DOMContentLoaded", () => {
         // needs them width and height from DOM
         MeterChart(allDefects, 'rateMeter', {

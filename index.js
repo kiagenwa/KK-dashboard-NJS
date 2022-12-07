@@ -42,7 +42,7 @@ connection.on('connect', function(err) {
   executeStatement(qG.getLatestWeek(), weeks => {
     app.get('/', (_, res) => {
       //res.json(weeks);
-      mainDashboard(weeks[1].weeknum, weeks[0].weeknum, res, 0);
+      mainDashboard(weeks[1].weeknum, weeks[0].weeknum, res, 1);
     });
 
     app.post("/select", bodyParser.urlencoded({extended: false}), (req, res) => {
@@ -84,7 +84,7 @@ function mainDashboard(startWeek, endWeek, res, type) {
         defectsPareto: defectsPareto,
         dailyRecords: dailyRecords
       });
-      //res.json(defectsPareto[10]);
+      console.log(data.weeklyFOR)
       res.render('index', { 
         weeklyFOR: data.weeklyFOR,
         model_qty: data.model_qty,
@@ -121,11 +121,11 @@ function digestData (type, data) {
   defects.forEach(d => {
     d.dppm = Math.round(d.quantity * 1000000 / totalInput);
   });
-
+  console.log(dailyPD)
   dailyPD.forEach(d => {
-    if (weeklyFOR[d.weeknum] === undefined) weeklyFOR[d.weeknum] = [ d.defect_qty, d.PDinput];
+    if (weeklyFOR[d.weeknum] === undefined) weeklyFOR[d.weeknum] = [ d.defect_qty == 'NULL' ? 0:d.defect_qty, d.PDinput];
     else {
-      weeklyFOR[d.weeknum][0] += d.defect_qty;
+      weeklyFOR[d.weeknum][0] += d.defect_qty == 'NULL' ? 0:d.defect_qty;
       weeklyFOR[d.weeknum][1] += d.PDinput;
     }
     if (model_qty[d.model_name] === undefined) model_qty[d.model_name] = d.PDoutput;

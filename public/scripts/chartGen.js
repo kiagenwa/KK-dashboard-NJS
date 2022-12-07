@@ -133,6 +133,7 @@ function BarChartHorizontal(data, elementId, {
 function BarChartVertical(data, elementId, {
   x = (d, i) => i, // given d in data, returns the (ordinal) x-value
   y = d => d, // given d in data, returns the (quantitative) y-value
+  z = () => 1, // given d in data, returns the (categorical) z-value
   title, // given d in data, returns the title text
   marginTop = 20, // the top margin, in pixels
   marginRight = 0, // the right margin, in pixels
@@ -142,36 +143,44 @@ function BarChartVertical(data, elementId, {
   height = 400, // the outer height of the chart, in pixels
   xDomain, // an array of (ordinal) x-values
   xRange = [marginLeft, width - marginRight], // [left, right]
-  xType = d3.scaleBand,
+  xType = d3.scaleBand,   // x-scale type
   yType = d3.scaleLinear, // y-scale type
   yDomain, // [ymin, ymax]
   yRange = [height - marginBottom, marginTop], // [bottom, top]
   xPadding = 0.1, // amount of x-range to reserve to separate bars
   yFormat, // a format specifier string for the y-axis
   yLabel, // a label for the y-axis
-  color = "currentColor", // bar fill color
+  zDomain,  // array of z-values
+  zPadding = 0,  // amount of x-range to reserve to separate bars, put 0 if no z
+  colors = d3.schemeTableau10, // // array of bar fill colors
   maxBarWidth = 80,   // maximum bar width
   target,     // put a target to chart
 } = {}) {
   // Compute values.
   const X = d3.map(data, x);
   const Y = d3.map(data, y);
+  const Z = d3.map(data, z);
   
   // Compute default domains, and unique the x-domain.
   if (xDomain === undefined) xDomain = X;
   if (yDomain === undefined) yDomain = [0, d3.max(Y)];
+  if (zDomain === undefined) zDomain = Z;
   xDomain = new d3.InternSet(xDomain);
+  zDomain = new d3.InternSet(zDomain);
 
-  // Omit any data not present in the x-domain.
-  const I = d3.range(X.length).filter(i => xDomain.has(X[i]));
+  if (yDomain[1] < target) yDomain[1] = target;
 
-  // Construct X scale
-  const xScale = xType(xDomain, xRange).padding(xPadding);
+  // Omit any data not present in both the x- and z-domain.
+  const I = d3.range(X.length).filter(i => xDomain.has(X[i]) && zDomain.has(Z[i]));
+
+  // Construct X scales
+  const xScale = xType(xDomain, xRange).paddingInner(xPadding);
+  const xzScale = d3.scaleBand(zDomain, [0, xScale.bandwidth()]).padding(zPadding);
 
   // determine bar width
   let barWidth;
-  if (maxBarWidth < xScale.bandwidth()) barWidth = maxBarWidth;
-  else barWidth = xScale.bandwidth();
+  if (maxBarWidth < xzScale.bandwidth()) barWidth = maxBarWidth;
+  else barWidth = xzScale.bandwidth();
 
   // adjust graph area in case tick labels overwrite issue
   const longestString = X.reduce((a, b) => {
@@ -180,22 +189,25 @@ function BarChartVertical(data, elementId, {
   const stringSpace = longestString.length * 6
   // if bar width is smaller than string space, need to rotate x tick texts
   // firstly, the x axis must be lifted up to provide space to rotated tick
-  if (barWidth < stringSpace) {
+  if (xScale.bandwidth() < stringSpace) {
     marginBottom += stringSpace * Math.sin(Math.PI * 0.17);
     yRange[0] = height - marginBottom;
   }
 
-  // construct Y scale
+  // construct other scales
   const yScale = yType(yDomain, yRange);
+  const zScale = d3.scaleOrdinal(zDomain, colors);
+  console.log(zScale(Z[1]), Z);
 
   // construct axes
   const xAxis = d3.axisBottom(xScale).tickSizeOuter(0);
   const yAxis = d3.axisLeft(yScale).ticks(height / 40, yFormat);
 
-  // Compute titles.
+  // Compute titles (small pop-up when mouse hovering)
   if (title === undefined) {
     const formatValue = yScale.tickFormat(100, yFormat);
-    title = i => `${X[i]}\n${formatValue(Y[i])}`;
+    if (zPadding == 0) title = i => `${X[i]}\n${formatValue(Y[i])}`;
+    else title = i => `${X[i]}\n${Z[i]}\n${formatValue(Y[i])}`;
   } else {
     const O = d3.map(data, d => d);
     const T = title;
@@ -237,14 +249,14 @@ function BarChartVertical(data, elementId, {
   }
 
   const bar = svg.append("g")
-    .attr("fill", color)
     .selectAll("rect")
     .data(I)
     .join("rect")
-      .attr("x", i => xScale(X[i]) + xScale.bandwidth() / 2 - barWidth / 2)
+      .attr("x", i => xScale(X[i]) + xzScale(Z[i]) + xzScale.bandwidth() / 2 - barWidth / 2)
       .attr("y", i => yScale(Y[i]))
       .attr("height", i => yScale(0) - yScale(Y[i]))
-      .attr("width", barWidth);
+      .attr("width", barWidth)
+      .attr("fill", i => zScale(Z[i]));
 
   if (title) bar.append("title")
       .text(title);
@@ -253,7 +265,8 @@ function BarChartVertical(data, elementId, {
       .attr("transform", `translate(0,${height - marginBottom})`)
       .call(xAxis)
   
-  if (barWidth < stringSpace) {
+  // rotate x ticks text 30 degree down if text overrides
+  if (xScale.bandwidth() < stringSpace) {
     xTicks.selectAll("text")
       .attr("dx", "-0.5em")
       .attr("dy", "0.3em")

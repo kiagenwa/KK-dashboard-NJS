@@ -273,6 +273,9 @@ function BarChartVertical(data, elementId, {
       .attr("text-anchor", "end")
   }
   //return svg.node();
+  const colorScale = {};
+  zDomain.forEach(d => colorScale[d] = zScale(d));
+  return colorScale;
 }
 
 function MeterChart(value, elementId, {

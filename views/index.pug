@@ -20,8 +20,10 @@ block defectBar
       });
     });
 
-block dailyFAOutput
-  div#dailyFAChart.h-100
+block dailyOutput
+  h3#dailyTitle.center Daily Production Output
+  div.legendBlock#dailyOutputLegend
+  div#outputReport
   script.
     const dailyPD = !{JSON.stringify(PDdata)};
     const dateTimeFormat = new Intl.DateTimeFormat('en-GB', {year:'2-digit', month:'short', day:'numeric'});
@@ -29,13 +31,20 @@ block dailyFAOutput
       d.recorddate = dateTimeFormat.format(new Date(d.recorddate));
     });
     dailyPD.sort(d => new Date(d.recorddate));
+    const types = new d3.InternSet(d3.map(dailyPD, d => d.pdtypeID));
     document.addEventListener("DOMContentLoaded", () => {
-      BarChartVertical(dailyPD, 'dailyFAChart', {
+      if (types.size > 1) {
+        document.getElementById('dailyOutputLegend').style.height = "10%";
+        document.getElementById('dailyOutputLegend').style.width = "100%";
+        document.getElementById('dailyOutputLegend').style.margin = "0 auto";
+      } 
+      document.getElementById('outputReport').style.height = document.getElementById('dailyOutput').clientHeight - document.getElementById('dailyOutputLegend').clientHeight - document.getElementById('dailyTitle').clientHeight + "px";
+      BarChartVertical(dailyPD, 'outputReport', {
         x: d => d.recorddate,
         y: d => d.PDoutput,
         z: d => d.pdtypeID,
-        height: document.getElementById('dailyFAChart').clientHeight,
-        width: document.getElementById('dailyFAChart').clientWidth,
+        height: document.getElementById('outputReport').clientHeight,
+        width: document.getElementById('outputReport').clientWidth,
         zPadding: 0.1,
         marginRight: 30,
         marginLeft: 50,

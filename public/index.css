@@ -74,9 +74,10 @@ main {
 #topBox, #bottomBox {
   width: 100%;
   height: 25vw;
+  padding-bottom: 1%;
 }
 
-#defectBar, #dailyFAOutput {
+#defectBar, #dailyOutput {
   width: 50%;
   height: 100%;
 }

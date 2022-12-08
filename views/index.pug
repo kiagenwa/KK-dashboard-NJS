@@ -35,11 +35,11 @@ block dailyOutput
     document.addEventListener("DOMContentLoaded", () => {
       if (types.size > 1) {
         document.getElementById('dailyOutputLegend').style.height = "10%";
-        document.getElementById('dailyOutputLegend').style.width = "100%";
+        document.getElementById('dailyOutputLegend').style.width = "50%";
         document.getElementById('dailyOutputLegend').style.margin = "0 auto";
       } 
       document.getElementById('outputReport').style.height = document.getElementById('dailyOutput').clientHeight - document.getElementById('dailyOutputLegend').clientHeight - document.getElementById('dailyTitle').clientHeight + "px";
-      BarChartVertical(dailyPD, 'outputReport', {
+      const colorScale = BarChartVertical(dailyPD, 'outputReport', {
         x: d => d.recorddate,
         y: d => d.PDoutput,
         z: d => d.pdtypeID,
@@ -51,6 +51,12 @@ block dailyOutput
         yLabel: "units produced",
         color: "steelblue"
       });
+      if (types.size > 1) {
+        Legend(colorScale, 'dailyOutputLegend', {
+          width: document.getElementById('dailyOutputLegend').clientWidth,
+          height: document.getElementById('dailyOutputLegend').clientHeight
+        });
+      }
     });
 
 block defectTable

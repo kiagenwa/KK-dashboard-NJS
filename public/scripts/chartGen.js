@@ -4,6 +4,7 @@
 function BarChartHorizontal(data, elementId, {
   x = d => d, // given d in data, returns the (quantitative) x-value
   y = (d, i) => i, // given d in data, returns the (ordinal) y-value
+  z = () => 1,
   title, // given d in data, returns the title text
   marginTop = 30, // the top margin, in pixels
   marginRight = 0, // the right margin, in pixels
@@ -19,7 +20,8 @@ function BarChartHorizontal(data, elementId, {
   yPadding = 0.1, // amount of y-range to reserve to separate bars
   yDomain, // an array of (ordinal) y-values
   yRange, // [top, bottom]
-  color = "currentColor", // bar fill color
+  zDomain,  // array of z-values
+  colors = d3.schemeTableau10, // bar fill color
   titleColor = "white", // title fill color when atop bar
   titleAltColor = "currentColor", // title fill color when atop background
   maxBarHeight = 80,    // maximum bar height
@@ -28,14 +30,19 @@ function BarChartHorizontal(data, elementId, {
   // Compute values.
   const X = d3.map(data, x);
   const Y = d3.map(data, y);
+  const Z = d3.map(data, z);
 
   // Compute default domains, and unique the y-domain.
   if (xDomain === undefined) xDomain = [0, d3.max(X)];
   if (yDomain === undefined) yDomain = Y;
+  if (zDomain === undefined) zDomain = Z;
   yDomain = new d3.InternSet(yDomain);
+  zDomain = new d3.InternSet(zDomain);
 
-  // Omit any data not present in the y-domain.
-  const I = d3.range(X.length).filter(i => yDomain.has(Y[i]));
+  if (xDomain[1] < target) xDomain[1] = target;
+
+  // Omit any data not present in the y- and z-domain.
+  const I = d3.range(X.length).filter(i => yDomain.has(Y[i]) && zDomain.has(Z[i]));
 
   // Compute the default height.
   if (height === undefined) height = Math.ceil((yDomain.size + yPadding) * 25) + marginTop + marginBottom;
@@ -44,6 +51,7 @@ function BarChartHorizontal(data, elementId, {
   // Construct scales and axes.
   const xScale = xType(xDomain, xRange);
   const yScale = d3.scaleBand(yDomain, yRange).padding(yPadding);
+  const zScale = d3.scaleOrdinal(zDomain, colors);
   const xAxis = d3.axisTop(xScale).ticks(width / 80, xFormat);
   const yAxis = d3.axisLeft(yScale).tickSizeOuter(0);
 
@@ -96,14 +104,14 @@ function BarChartHorizontal(data, elementId, {
   }
 
   svg.append("g")
-      .attr("fill", color)
     .selectAll("rect")
     .data(I)
     .join("rect")
       .attr("x", xScale(0))
       .attr("y", i => yScale(Y[i]) + yScale.bandwidth() / 2 - barHeight / 2)
       .attr("width", i => xScale(X[i]) - xScale(0))
-      .attr("height", barHeight);
+      .attr("height", barHeight)
+      .attr("fill", i => zScale(Z[i]));
 
   svg.append("g")
       .attr("fill", titleColor)
@@ -128,6 +136,7 @@ function BarChartHorizontal(data, elementId, {
       .call(yAxis);
 
   //return svg.node();
+  return zScale;
 }
 
 function BarChartVertical(data, elementId, {

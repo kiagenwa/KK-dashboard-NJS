@@ -48,7 +48,8 @@ function BarChartHorizontal(data, elementId, {
   if (height === undefined) height = Math.ceil((yDomain.size + yPadding) * 25) + marginTop + marginBottom;
   if (yRange === undefined) yRange = [marginTop, height - marginBottom];
 
-  if (marginLeft == 0) xRange[0] = 4;
+  // Shift chart to the right to avoid overflow
+  if (xRange[0] == 0) xRange[0] = 4;
 
   // Construct scales and axes.
   const xScale = xType(xDomain, xRange);

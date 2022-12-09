@@ -13,7 +13,7 @@ block defectBar
         height: document.getElementById('paretoChart').clientHeight,
         width: document.getElementById('paretoChart').clientWidth,
         marginRight: 20,
-        marginLeft: 100,
+        marginLeft: d3.max(top10data, d => d.criteria.length)*6,
         xLabel: "dppm",
         color: "steelblue",
         target: 1000
@@ -32,11 +32,13 @@ block dailyOutput
     });
     dailyPD.sort(d => new Date(d.recorddate));
     const types = new d3.InternSet(d3.map(dailyPD, d => d.pdtypeID));
+    let zPadding = 0;
     document.addEventListener("DOMContentLoaded", () => {
       if (types.size > 1) {
         document.getElementById('dailyOutputLegend').style.height = "10%";
         document.getElementById('dailyOutputLegend').style.width = "50%";
         document.getElementById('dailyOutputLegend').style.margin = "0 auto";
+        zPadding = 0.1;
       } 
       document.getElementById('outputReport').style.height = document.getElementById('dailyOutput').clientHeight - document.getElementById('dailyOutputLegend').clientHeight - document.getElementById('dailyTitle').clientHeight + "px";
       const colorScale = BarChartVertical(dailyPD, 'outputReport', {
@@ -45,7 +47,7 @@ block dailyOutput
         z: d => d.pdtypeID,
         height: document.getElementById('outputReport').clientHeight,
         width: document.getElementById('outputReport').clientWidth,
-        zPadding: 0.1,
+        zPadding: zPadding,
         marginRight: 30,
         marginLeft: 50,
         yLabel: "units produced",
@@ -99,7 +101,8 @@ block weeklyFOR
     });
 
 block modelBar
-  div#modelBar.h-100
+  div.legendBlock#modelQtyLegend
+  div#modelBar
   script.
     const model_qty = !{JSON.stringify(model_qty)};
     const modelOutput = [];
@@ -109,15 +112,24 @@ block modelBar
         output_qty: model_qty[model]
       });
     document.addEventListener("DOMContentLoaded", () => {
-      BarChartHorizontal(modelOutput, 'modelBar', {
+      document.getElementById('modelQtyLegend').style.height = "10%";
+      document.getElementById('modelQtyLegend').style.maxWidth = "100%";
+      document.getElementById('modelQtyLegend').style.width = d3.max(modelOutput, d => d.model_name.length) * 7 * modelOutput.length + "px";
+      document.getElementById('modelBar').style.height = "90%";
+      const colorScale = BarChartHorizontal(modelOutput, 'modelBar', {
         x: d => d.output_qty,
         y: d => d.model_name,
+        z: d => d.model_name,
         height: document.getElementById('modelBar').clientHeight,
         width: document.getElementById('modelBar').clientWidth,
         marginRight: 20,
-        marginLeft: 100,
+        marginLeft: 0,
         xLabel: "pcs",
         color: "steelblue"
+      });
+      Legend(colorScale, 'modelQtyLegend', {
+        width: document.getElementById('modelQtyLegend').clientWidth,
+        height: document.getElementById('modelQtyLegend').clientHeight
       });
     });
 

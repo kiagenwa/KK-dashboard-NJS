@@ -41,12 +41,10 @@ connection.on('connect', function(err) {
   // as this app mainly uses data from the DB, let's connect it first.
   executeStatement(qG.getLatestWeek(), weeks => {
     app.get('/', (_, res) => {
-      //res.json(weeks);
-      mainDashboard(weeks[1].weeknum, weeks[0].weeknum, res, 1);
+      mainDashboard(weeks[1].weeknum, weeks[0].weeknum, res, 0);
     });
 
     app.post("/select", bodyParser.urlencoded({extended: false}), (req, res) => {
-      //res.json(req.body);   // startWeek and endWeek
       mainDashboard(req.body.startWeek, req.body.endWeek, res, 0);
     });
     

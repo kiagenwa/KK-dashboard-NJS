@@ -4,7 +4,7 @@
 function BarChartHorizontal(data, elementId, {
   x = d => d, // given d in data, returns the (quantitative) x-value
   y = (d, i) => i, // given d in data, returns the (ordinal) y-value
-  z = () => 1,
+  z = () => 1,  // given d in data, returns the (categorical) z-value
   title, // given d in data, returns the title text
   marginTop = 30, // the top margin, in pixels
   marginRight = 0, // the right margin, in pixels
@@ -47,6 +47,8 @@ function BarChartHorizontal(data, elementId, {
   // Compute the default height.
   if (height === undefined) height = Math.ceil((yDomain.size + yPadding) * 25) + marginTop + marginBottom;
   if (yRange === undefined) yRange = [marginTop, height - marginBottom];
+
+  if (marginLeft == 0) xRange[0] = 4;
 
   // Construct scales and axes.
   const xScale = xType(xDomain, xRange);
@@ -131,10 +133,12 @@ function BarChartHorizontal(data, elementId, {
           .attr("fill", titleAltColor)
           .attr("text-anchor", "start"));
 
-  svg.append("g")
+  if (marginLeft != 0) {
+    svg.append("g")
       .attr("transform", `translate(${marginLeft},0)`)
       .call(yAxis);
-
+  }
+  
   //return svg.node();
   return zScale;
 }

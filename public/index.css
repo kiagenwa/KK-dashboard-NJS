@@ -25,7 +25,8 @@ main {
 #defectTable {
   font-size: 10px;
   padding: 0 10px 0;
-  width: 15%
+  width: 15%;
+  overflow: scroll;
 }
 .dashboardBox .dashboardBox {
   flex-direction: column;

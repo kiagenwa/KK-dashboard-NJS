@@ -432,6 +432,7 @@ function Legend(color, elementId,{
 
   let tickAdjust = g => g.selectAll(".tick line").attr("y1", marginTop + marginBottom - height);
   let x;
+  
 
   // Continuous
   if (color.interpolate) {

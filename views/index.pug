@@ -56,7 +56,8 @@ block dailyOutput
       if (types.size > 1) {
         Legend(colorScale, 'dailyOutputLegend', {
           width: document.getElementById('dailyOutputLegend').clientWidth,
-          height: document.getElementById('dailyOutputLegend').clientHeight
+          height: document.getElementById('dailyOutputLegend').clientHeight,
+          marginTop: 2
         });
       }
     });
@@ -101,7 +102,6 @@ block weeklyFOR
     });
 
 block modelBar
-  div.legendBlock#modelQtyLegend
   div#modelBar
   script.
     const model_qty = !{JSON.stringify(model_qty)};
@@ -112,24 +112,17 @@ block modelBar
         output_qty: model_qty[model]
       });
     document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById('modelQtyLegend').style.height = "10%";
-      document.getElementById('modelQtyLegend').style.maxWidth = "100%";
-      document.getElementById('modelQtyLegend').style.width = d3.max(modelOutput, d => d.model_name.length) * 7 * modelOutput.length + "px";
-      document.getElementById('modelBar').style.height = "90%";
+      document.getElementById('modelBar').style.height = "100%";
       const colorScale = BarChartHorizontal(modelOutput, 'modelBar', {
         x: d => d.output_qty,
         y: d => d.model_name,
-        z: d => d.model_name,
+        title: d => `${d.model_name}: ${d.output_qty}`,
         height: document.getElementById('modelBar').clientHeight,
         width: document.getElementById('modelBar').clientWidth,
         marginRight: 20,
         marginLeft: 0,
         xLabel: "pcs",
         color: "steelblue"
-      });
-      Legend(colorScale, 'modelQtyLegend', {
-        width: document.getElementById('modelQtyLegend').clientWidth,
-        height: document.getElementById('modelQtyLegend').clientHeight
       });
     });
 

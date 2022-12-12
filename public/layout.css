@@ -1,6 +1,7 @@
 header {
   width: 100%;
   max-height: 84px;
+  min-height: 60px;
   display: flex;
   background-color: WHITE;
 }
@@ -67,5 +68,5 @@ footer {
   width: 100%;
   max-height: 50px;
   margin: 0;
-  text-align: end
+  text-align: center
 }

@@ -4,9 +4,6 @@ main {
 .dashboardBox {
   display: flex;
 }
-.dashboardItem {
-  border: 1px solid black;
-}
 .dashboardBox .dashboardBox .dashboardItem {
   height: 50%;
 }

@@ -6,6 +6,7 @@ block defectBar
   script.
     document.getElementById('startWeek').value = !{JSON.stringify(startWeek)}
     document.getElementById('endWeek').value = !{JSON.stringify(endWeek)}
+    const maxBarFat = window.innerWidth * .04;
     const chartHeight2W = 0.5;
     const top10data = !{JSON.stringify(defects)}.slice(0,-1);
     document.addEventListener("DOMContentLoaded", () => {
@@ -52,6 +53,7 @@ block dailyOutput
         zPadding: zPadding,
         marginRight: 30,
         marginLeft: 50,
+        maxBarWidth: maxBarFat,
         yLabel: "units produced",
         color: "steelblue"
       });
@@ -99,6 +101,7 @@ block weeklyFOR
         marginLeft: 50,
         yLabel: "ppm",
         color: "steelblue",
+        maxBarWidth: maxBarFat,
         target: 5000
       });
     });
@@ -124,6 +127,7 @@ block modelBar
         marginRight: 20,
         marginLeft: 0,
         xLabel: "pcs",
+        maxBarHeight: maxBarFat,
         color: "steelblue"
       });
     });

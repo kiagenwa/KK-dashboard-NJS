@@ -59,11 +59,12 @@ html(lang="en")
           div#overallFOR.dashboardItem
             block overallFOR
               p a meter to show overall %FOR is here!
-    block footer
-      footer
+    footer
         p © #{new Date().getFullYear()} Home Control Singapore
     script.
       const topBar = document.querySelectorAll("header")[0];
       topBar.style.height = window.innerHeight * .08 + "px";
       document.querySelectorAll("header .omni-logo")[0].style.height = topBar.clientHeight * .8 + "px";
+      document.getElementById('topBox').style.height = window.innerHeight * .46 + "px";
+      document.getElementById('bottomBox').style.height = window.innerHeight * .42 + "px";
     script(src='./js/bootstrap.min.js')

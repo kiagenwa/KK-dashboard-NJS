@@ -12,10 +12,22 @@ html(lang="en")
     link(rel='manifest' href='/images/favico/site.webmanifest')
     script(src='./d3/dist/d3.js')
     script(src="/scripts/chartGen.js")
+    link(rel='stylesheet' href='./layout.css')
     link(rel='stylesheet' href='./index.css')
   body
     header
-      h1#appName Omni Cambodia Quality Dashboard
+      img.omni-logo(src='/images/Logo-Horizontal.jpg' alt="Omni logo")
+      h1#appName OMNI CAMBODIA QUALITY DASHBOARD
+      form(action="/select" method="POST" display="")
+        fieldset
+          div
+            label(for="startWeek") FROM 
+            input(type="number" id="startWeek" name="startWeek" size="5")
+          div
+            label(for="endWeek") TO 
+            input(type="number" id="endWeek" name="endWeek" size="5")
+          div
+            input(type="submit" id="filterSubmit" value="Go")
       nav
         ul
           li 
@@ -41,17 +53,17 @@ html(lang="en")
           block modelBar
             p quantity of each model is shown here!
         div.dashboardBox
+          div#topTrend.dashboardItem
+            block topTrend
+              p some top items to be shown here!
           div#overallFOR.dashboardItem
             block overallFOR
               p a meter to show overall %FOR is here!
-          div#dateFilter.dashboardItem
-            block dateFilter
-              p a filter to select data time period goes here!
     block footer
       footer
-        img.omni-logo(src='/images/Logo-Horizontal.jpg' alt="Omni logo")
-        p 
-          | © #{new Date().getFullYear()}
-          br
-          | Home Control Singapore
+        p © #{new Date().getFullYear()} Home Control Singapore
+    script.
+      const topBar = document.querySelectorAll("header")[0];
+      topBar.style.height = window.innerHeight * .08 + "px";
+      document.querySelectorAll("header .omni-logo")[0].style.height = topBar.clientHeight * .8 + "px";
     script(src='./js/bootstrap.min.js')

@@ -4,6 +4,9 @@ include mixins/_tableRow.pug
 block defectBar
   div#paretoChart.h-100
   script.
+    document.getElementById('startWeek').value = !{JSON.stringify(startWeek)}
+    document.getElementById('endWeek').value = !{JSON.stringify(endWeek)}
+    console.log(window.innerHeight);
     const chartHeight2W = 0.5;
     const top10data = !{JSON.stringify(defects)}.slice(0,-1);
     document.addEventListener("DOMContentLoaded", () => {
@@ -141,19 +144,3 @@ block overallFOR
           target: 0.5
         });
       });
-      
-block dateFilter
-  h3 Timer selector
-  form(action="/select" method="POST" display="")
-    fieldset
-      legend Start and end week# (YYWW)
-      label(for="startWeek") start 
-      input(type="number" id="startWeek" name="startWeek" size="5")
-      br/
-      label(for="endWeek") end 
-      input(type="number" id="endWeek" name="endWeek" size="5")
-      br/
-      input(type="submit" value="Go")
-    script.
-      document.getElementById('startWeek').value = !{JSON.stringify(startWeek)}
-      document.getElementById('endWeek').value = !{JSON.stringify(endWeek)}

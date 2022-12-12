@@ -309,7 +309,7 @@ function MeterChart(value, elementId, {
   const text = value.toFixed(2) + '%';
   const data = [value - startValue, endValue - value - startValue];
   const anglesRange = 0.5 * Math.PI;
-  const radis = Math.min(width, 2*height) / 2 - 1.8*paddingBottom;
+  const radis = Math.min(width, 2*height) / 2 - paddingBottom;
   const thickness = radis / 3;
   const colors = [colorValue, colorBlank];
 
@@ -432,7 +432,7 @@ function Legend(color, elementId,{
 
   let tickAdjust = g => g.selectAll(".tick line").attr("y1", marginTop + marginBottom - height);
   let x;
-  
+
 
   // Continuous
   if (color.interpolate) {

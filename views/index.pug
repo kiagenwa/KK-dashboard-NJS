@@ -130,16 +130,16 @@ block modelBar
 
 block overallFOR
   div#rateMeter.h-100
+    h4 Overall %FOR
     script.
       const allDefects = !{JSON.stringify(defects[defects.length - 1].dppm)} / 10000.00;
       document.addEventListener("DOMContentLoaded", () => {
         // needs them width and height from DOM
         MeterChart(allDefects, 'rateMeter', {
-          title: "overall %FOR",
           startValue: 0,
           endValue: 2,
-          width: document.getElementById('rateMeter').clientWidth - 30,
-          height: document.getElementById('rateMeter').clientHeight - 30,
+          width: document.getElementById('rateMeter').clientWidth,
+          height: document.getElementById('rateMeter').clientHeight - document.querySelectorAll('#rateMeter h4')[0].clientHeight,
           target: 0.5
         });
       });

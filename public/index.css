@@ -4,10 +4,6 @@ main {
 .dashboardBox {
   display: flex;
 }
-.dashboardBox .dashboardBox {
-  flex-direction: column;
-  width: 21%;
-}
 .dashboardItem {
   border: 1px solid black;
 }
@@ -22,25 +18,29 @@ main {
   width: 50%;
   height: 100%;
 }
+
 #weeklyFOR, #modelQty {
   width: 32%;
-}
-#modelQty {
-  padding-left: 1%;
 }
 #defectTable {
   font-size: 10px;
   padding: 0 10px 0;
   width: 15%
 }
-#rateMeter, #dateFilter {
+.dashboardBox .dashboardBox {
+  flex-direction: column;
   width: 21%;
 }
-#rateMeter {
-  padding: 15px;
-}
-#dateFilter {
-  padding-top: 5px;
-  padding-left: 10px;
-}
 
+#modelQty {
+  padding-left: 1%;
+}
+#rateMeter{
+  padding: 0;
+  width: 100%;
+  align-items: center;
+}
+#rateMeter h4 {
+  text-align: center;
+  margin: 0;
+}

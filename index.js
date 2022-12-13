@@ -83,6 +83,9 @@ function mainDashboard(startWeek, endWeek, res, type) {
         dailyRecords: dailyRecords
       });
       executeStatement(qG.getPastRate(data.firstDate, 30, type === 0? '3':'1,2,4', data.topDefects), (pastTopRates) => {
+        pastTopRates.forEach(d => {
+          d.defect = data.defectsPareto.filter(a => a.defectID === d.defectID)[0];
+        });
         res.render('index', { 
           weeklyFOR: data.weeklyFOR,
           model_qty: data.model_qty,

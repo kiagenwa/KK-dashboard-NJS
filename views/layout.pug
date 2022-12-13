@@ -4,21 +4,21 @@ html(lang="en")
     title Omni Cambodia Quality Dashboard
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1")
-    link(rel='stylesheet' href='./css/bootstrap.min.css')
+    link(rel='stylesheet' href='/css/bootstrap.min.css')
     //- declare site icon
     link(rel='apple-touch-icon' sizes="180x180" href='/images/favico/apple-touch-icon.png')
     link(rel='icon' type='image/png' sizes='32x32' href='/images/favico/favicon-32x32.png')
     link(rel='icon' type='image/png' sizes='16x16' href='/images/favico/favicon-16x16.png')
     link(rel='manifest' href='/images/favico/site.webmanifest')
-    script(src='./d3/dist/d3.js')
+    script(src='/d3/dist/d3.js')
     script(src="/scripts/chartGen.js")
-    link(rel='stylesheet' href='./layout.css')
-    link(rel='stylesheet' href='./index.css')
+    link(rel='stylesheet' href='/layout.css')
+    link(rel='stylesheet' href='/index.css')
   body
     header
       img.omni-logo(src='/images/Logo-Horizontal.jpg' alt="Omni logo")
       h1#appName OMNI CAMBODIA QUALITY DASHBOARD
-      form(action="/select" method="POST" display="")
+      form(action="/select" method="POST" display="" id="dataFilter")
         fieldset
           div
             label(for="startWeek") FROM 
@@ -67,4 +67,6 @@ html(lang="en")
       document.querySelectorAll("header .omni-logo")[0].style.height = topBar.clientHeight * .8 + "px";
       document.getElementById('topBox').style.height = window.innerHeight * .46 + "px";
       document.getElementById('bottomBox').style.height = window.innerHeight * .42 + "px";
-    script(src='./js/bootstrap.min.js')
+      if (document.URL.slice(-6) === "select") document.getElementById('dataFilter').action = document.URL;
+      else document.getElementById('dataFilter').action = document.URL + "/select";
+    script(src='/js/bootstrap.min.js')

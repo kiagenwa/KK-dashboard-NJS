@@ -87,7 +87,6 @@ function mainDashboard(startWeek, endWeek, res, type) {
           weeklyFOR: data.weeklyFOR,
           model_qty: data.model_qty,
           defects: data.defectsPareto,
-          //totalDefects: data.totalDefects,
           pastTopRates: pastTopRates,
           PDdata: data.dailyRecords,
           startWeek: startWeek,

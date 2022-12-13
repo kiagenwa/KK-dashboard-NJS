@@ -75,7 +75,7 @@ block defectTable
         th DPPM
       tbody
         each row in defects
-          +tableRow(row)
+          +top10TableRow(row)
       tfoot
         tr
           th(colspan='6')
@@ -147,3 +147,17 @@ block overallFOR
           target: 0.5
         });
       });
+
+block topTrend
+  table.table.table-striped.table-hover
+    thead
+      tr
+        th Defect
+        th Prior
+        th Now
+      tbody
+        each row in pastTopRates
+          +topTrendTableRow(row)
+      tfoot
+        tr
+          th(colspan='6')

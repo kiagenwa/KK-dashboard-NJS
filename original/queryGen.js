@@ -1,7 +1,8 @@
 module.exports = { 
   defectParetoWeeks,
   dailyRecordWeeks,
-  getLatestWeek }
+  getLatestWeek,
+  getPastRate }
 
 function defectParetoWeeks (startWeek, endWeek) {
   // refrain from using BETWEEN as the engine has to interpret each time and cause delay.
@@ -19,5 +20,11 @@ function dailyRecordWeeks (startWeek, endWeek) {
 function getLatestWeek (weeks = "") {
   return `
   EXEC	GetLatestWeek ${weeks};
+  `
+}
+
+function getPastRate (startDate, daysData, pdtypeID, defectIDs) {
+  return `
+  EXEC  TopPastDefects ${startDate}, ${daysData}, ${pdtypeID}, ${defectIDs};
   `
 }

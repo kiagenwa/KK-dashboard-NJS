@@ -1,15 +1,15 @@
-mixin tableRow(row)
+mixin top10TableRow(row)
   if row.dppm > 999 && row.criteria != 'TOTAL'
     tr.table-warning
-      +rowItems(row)
+      +top10RowItems(row)
   else if row.criteria == 'TOTAL'
     tr.table-dark
-      +rowItems(row)
+      +top10RowItems(row)
   else
     tr
-      +rowItems(row)
+      +top10RowItems(row)
 
-mixin rowItems(row)
+mixin top10RowItems(row)
   td !{"<b>"}#{row.criteria}!{"</b>"}
   if row.criteria != 'TOTAL'
     td #{row.quantity}
@@ -17,3 +17,20 @@ mixin rowItems(row)
   else
     td !{"<b>"}#{row.quantity}!{"</b>"}
     td !{"<b>"}#{row.dppm}!{"</b>"}
+
+mixin topTrendTableRow(row)
+  if row.dppm < row.defect.dppm
+    tr.table-warning
+      +topTrendRowItems(row)
+  else if row.dppm > row.defect.dppm
+    tr.table-success
+      +topTrendRowItems(row)
+  else
+    tr
+      +topTrendRowItems(row)
+
+mixin topTrendRowItems(row)
+  td
+    b #{row.defect.criteria}
+  td #{row.dppm}
+  td #{row.defect.dppm}

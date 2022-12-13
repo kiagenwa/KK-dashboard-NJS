@@ -25,6 +25,6 @@ function getLatestWeek (weeks = "") {
 
 function getPastRate (startDate, daysData, pdtypeID, defectIDs) {
   return `
-  EXEC  TopPastDefects ${startDate}, ${daysData}, ${pdtypeID}, ${defectIDs};
+  EXEC  TopPastDefects ${startDate}, ${daysData}, '${pdtypeID}', '${defectIDs}';
   `
 }

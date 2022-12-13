@@ -86,6 +86,7 @@ function mainDashboard(startWeek, endWeek, res, type) {
         pastTopRates.forEach(d => {
           d.defect = data.defectsPareto.filter(a => a.defectID === d.defectID)[0];
         });
+        pastTopRates.sort((a, b) => b.defect.dppm - a.defect.dppm);
         res.render('index', { 
           weeklyFOR: data.weeklyFOR,
           model_qty: data.model_qty,

@@ -82,14 +82,17 @@ function mainDashboard(startWeek, endWeek, res, type) {
         defectsPareto: defectsPareto,
         dailyRecords: dailyRecords
       });
-      res.render('index', { 
-        weeklyFOR: data.weeklyFOR,
-        model_qty: data.model_qty,
-        defects: data.defectsPareto,
-        totalDefects: data.totalDefects,
-        PDdata: data.dailyRecords,
-        startWeek: startWeek,
-        endWeek: endWeek });
+      executeStatement(qG.getPastRate(data.firstDate, 30, type === 0? '3':'1,2,4', data.topDefects), (pastTopRates) => {
+        res.render('index', { 
+          weeklyFOR: data.weeklyFOR,
+          model_qty: data.model_qty,
+          defects: data.defectsPareto,
+          //totalDefects: data.totalDefects,
+          pastTopRates: pastTopRates,
+          PDdata: data.dailyRecords,
+          startWeek: startWeek,
+          endWeek: endWeek });
+        });
       });
     });
 }
@@ -106,33 +109,55 @@ function digestData (type, data) {
   const totalDefects = defects.reduce((ttl, d) => ttl + d.quantity, 0);
   const weeklyFOR = {};
   const model_qty = {};
+  let firstDate = Infinity;
 
-  // take out 10th+ pareto data
-  if (defects.length > 10) defects.splice(9, defects.length - 10)
-  defects.push({
-    criteria: 'TOTAL',
-    quantity: totalDefects
+  if (defects.length > 0) {
+    // take out 10th+ pareto data
+    if (defects.length > 10) defects.splice(9, defects.length - 10)
+    defects.push({
+      criteria: 'TOTAL',
+      quantity: totalDefects
+    });
+    // calculate dppm
+    // what if there's no defects? to add a condition later.
+    defects.forEach(d => {
+      d.dppm = Math.round(d.quantity * 1000000 / totalInput);
+    });
+  } else defects.push({
+    criteria: '(no failures reported)',
+    quantity: 0
   });
-  // calculate dppm
-  // what if there's no defects? to add a condition later.
-  defects.forEach(d => {
-    d.dppm = Math.round(d.quantity * 1000000 / totalInput);
-  });
+  
   dailyPD.forEach(d => {
+    // compute weekly %FOR
     if (weeklyFOR[d.weeknum] === undefined) weeklyFOR[d.weeknum] = [ d.defect_qty == 'NULL' ? 0:d.defect_qty, d.PDinput];
     else {
       weeklyFOR[d.weeknum][0] += d.defect_qty == 'NULL' ? 0:d.defect_qty;
       weeklyFOR[d.weeknum][1] += d.PDinput;
     }
+    // aggregate output by model
     if (model_qty[d.model_name] === undefined) model_qty[d.model_name] = d.PDoutput;
     else model_qty[d.model_name] += d.PDoutput;
+    // get lowest date ID
+    if (d.dateID < firstDate) firstDate = d.dateID;
   });
 
-  return {
-    weeklyFOR: weeklyFOR,
-    model_qty: model_qty,
-    defectsPareto: defects,
-    dailyRecords: dailyPD,
-    totalDefects: totalDefects
-  };
+  if (defects.length > 0) {
+    let topDefects = '';
+    let accuFOR = 0.0;
+    for (let i = 0; i < defects.length - 1; i++) {
+      if (i === 5 || accuFOR > 0.7) break;
+      accuFOR += defects[i].dppm/defects[defects.length - 1];
+      topDefects += defects[i].defectID + ','
+    }
+    return {
+      weeklyFOR: weeklyFOR,
+      model_qty: model_qty,
+      defectsPareto: defects,
+      dailyRecords: dailyPD,
+      totalDefects: totalDefects,
+      firstDate: firstDate,
+      topDefects: topDefects.slice(0, topDefects.length-1)
+    };
+  } 
 }

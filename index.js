@@ -37,33 +37,35 @@ const sqlConfig = {
 const connection = new Connection(sqlConfig);
 connection.on('connect', function(err) {
   if (err) console.log(err);
-  else console.log('Connected to JR_OMNI database.');
-  // as this app mainly uses data from the DB, let's connect it first.
-  executeStatement(qG.getLatestWeek(), weeks => {
-    app.get('/', (_, res) => {
-      res.redirect('/FA');
-    });
+  else {
+    console.log('Connected to JR_OMNI database.');
+    // as this app mainly uses data from the DB, let's connect it first.
+    executeStatement(qG.getLatestWeek(), weeks => {
+      app.get('/', (_, res) => {
+        res.redirect('/FA');
+      });
 
-    app.get('/FA', (_, res) => {
-      mainDashboard(weeks[1].weeknum, weeks[0].weeknum, res, 0);
-    });
+      app.get('/FA', (_, res) => {
+        mainDashboard(weeks[1].weeknum, weeks[0].weeknum, res, 0);
+      });
 
-    app.get('/PCBA', (_,res) => {
-      mainDashboard(weeks[1].weeknum, weeks[0].weeknum, res, 1);
-    });
+      app.get('/PCBA', (_,res) => {
+        mainDashboard(weeks[1].weeknum, weeks[0].weeknum, res, 1);
+      });
 
-    app.post("/FA/select", bodyParser.urlencoded({extended: false}), (req, res) => {
-      mainDashboard(req.body.startWeek, req.body.endWeek, res, 0);
-    });
+      app.post("/FA/select", bodyParser.urlencoded({extended: false}), (req, res) => {
+        mainDashboard(req.body.startWeek, req.body.endWeek, res, 0);
+      });
 
-    app.post('/PCBA/select', bodyParser.urlencoded({extended: false}), (req, res) => {
-      mainDashboard(req.body.startWeek, req.body.endWeek, res, 1);
+      app.post('/PCBA/select', bodyParser.urlencoded({extended: false}), (req, res) => {
+        mainDashboard(req.body.startWeek, req.body.endWeek, res, 1);
+      });
+      
+      app.listen(3000, () => {
+        console.log('Listening on port 3000...');
+      });
     });
-    
-    app.listen(3000, () => {
-      console.log('Listening on port 3000...');
-    });
-  });
+  }
 });
 connection.connect();
 
